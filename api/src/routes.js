@@ -4,10 +4,12 @@ import multer from 'multer';
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
+import InstallationController from './app/controllers/InstallationController';
 
 import validateSessionStore from './app/validations/SessionStore';
 import validateUserStore from './app/validations/UserStore';
 import validateUserUpdate from './app/validations/UserUpdate';
+import validateInstallationIndex from './app/validations/InstallationIndex';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -29,5 +31,11 @@ routes.put('/users', validateUserUpdate, UserController.update);
 routes.delete('/users/:id', UserController.delete);
 
 routes.post('/files', upload.single('file'), FileController.store);
+
+routes.get(
+  '/installations',
+  validateInstallationIndex,
+  InstallationController.index
+);
 
 export default routes;
