@@ -4,7 +4,7 @@ module.exports = {
   port: 5433,
   username: 'postgres',
   password: 'docker',
-  database: 'ocd',
+  database: 'odc',
   define: {
     timestamps: true,
     underscored: true,
