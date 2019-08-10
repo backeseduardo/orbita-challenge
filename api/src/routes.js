@@ -37,5 +37,11 @@ routes.get(
   validateInstallationIndex,
   InstallationController.index
 );
+routes.get('/installations/count', InstallationController.indexCount);
+routes.get(
+  '/installations/most-expensive',
+  InstallationController.indexMostExpensive
+);
+routes.get('/installations/top-months', InstallationController.indexTopMonths);
 
 export default routes;
