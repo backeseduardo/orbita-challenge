@@ -1,14 +1,24 @@
 import User from '../models/User';
+import File from '../models/File';
 
 class UserController {
   async index(req, res) {
-    const users = await User.findAll();
+    const users = await User.findAll({
+      attributes: ['id', 'name', 'email', 'state'],
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
+    });
 
     return res.json(users);
   }
 
   async store(req, res) {
-    const { name, email, state, password } = req.body;
+    const { email } = req.body;
 
     const userExist = await User.findOne({
       where: {
@@ -23,18 +33,16 @@ class UserController {
       });
     }
 
-    const { id } = await User.create({
-      name,
-      email,
-      state: state.toUpperCase(),
-      password,
+    const { id, name, state } = await User.create({
+      ...req.body,
+      state: req.body.state.toUpperCase(),
     });
 
     return res.json({ id, name, email, state });
   }
 
   async update(req, res) {
-    const { name, email, oldPassword, password } = req.body;
+    const { email, oldPassword, password } = req.body;
 
     const user = await User.findByPk(req.userId);
 
@@ -56,9 +64,12 @@ class UserController {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    await user.update({ name, email, password });
+    const { id, name, state } = await user.update({
+      ...req.body,
+      state: req.body.state.toUpperCase(),
+    });
 
-    return res.json({ id: user.id, name, email });
+    return res.json({ id, name, email, state });
   }
 
   async delete(req, res) {
