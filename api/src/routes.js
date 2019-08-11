@@ -5,6 +5,7 @@ import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
 import InstallationController from './app/controllers/InstallationController';
+import StateController from './app/controllers/StateController';
 
 import validateSessionStore from './app/validations/SessionStore';
 import validateUserStore from './app/validations/UserStore';
@@ -20,6 +21,7 @@ const upload = multer(multerConfig);
 
 routes.post('/users', validateUserStore, UserController.store);
 routes.post('/sessions', validateSessionStore, SessionController.store);
+routes.get('/states', StateController.index);
 
 /**
  * Every route bellow will need auth token
