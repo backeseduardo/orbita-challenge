@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { loginRequest } from '../../store/modules/auth/actions';
 
-// import history from '../../services/history';
-
 import logo from '../../assets/logo_maior.png';
 
 function Login() {
@@ -21,21 +19,6 @@ function Login() {
     e.preventDefault();
 
     dispatch(loginRequest(email, password));
-
-    // try {
-    //   await api.post('/sessions', {
-    //     email,
-    //     password,
-    //   });
-
-    //   // history.push('/dashboard');
-    // } catch (err) {
-    //   if (err.response) {
-    //     toast.error(err.response.data.message);
-    //   } else {
-    //     toast.error(err.message);
-    //   }
-    // }
   }
 
   return (
