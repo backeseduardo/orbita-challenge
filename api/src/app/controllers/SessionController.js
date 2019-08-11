@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 import User from '../models/User';
+import File from '../models/File';
 
 import authConfig from '../../config/auth';
 
@@ -12,6 +13,13 @@ class SessionController {
       where: {
         email,
       },
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
     });
 
     if (!user || !(await user.checkPassword(password))) {
@@ -20,11 +28,15 @@ class SessionController {
       });
     }
 
-    const { id, name, state } = user;
-
     return res.json({
-      user: { id, name, state },
-      token: jwt.sign({ id, name, state }, authConfig.secret, {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        state: user.state,
+        avatar: user.avatar,
+      },
+      token: jwt.sign({ id: user.id }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       }),
     });
