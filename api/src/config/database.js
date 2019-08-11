@@ -8,7 +8,7 @@ module.exports = {
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
   storage: './__tests__/database.sqlite',
-  logging: process.env.NODE_ENV === 'development',
+  logging: process.env.NODE_ENV === 'development' ? console.log : false, // eslint-disable-line
   define: {
     timestamps: true,
     underscored: true,
