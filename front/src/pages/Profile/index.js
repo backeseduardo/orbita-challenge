@@ -1,24 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
 
 import api from '../../services/api';
-import history from '../../services/history';
 
-// import schemaValidate from './schemaValidate';
+import { updateProfileRequest } from '../../store/modules/user/actions';
+
+import schemaValidate from './schemaValidate';
 
 function Profile() {
+  const dispatch = useDispatch();
+
+  const profile = useSelector(store => store.user.profile);
+
   const [states, setStates] = useState([]);
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [state, setState] = useState('');
+  const [name, setName] = useState(profile.name);
+  const [email, setEmail] = useState(profile.email);
+  const [state, setState] = useState(profile.state);
+  const [oldPassword, setOldPassword] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const [nameError, setNameError] = useState(null);
   const [emailError, setEmailError] = useState(null);
   const [stateError, setStateError] = useState(null);
+  const [oldPasswordError, setOldPasswordError] = useState(null);
   const [passwordError, setPasswordError] = useState(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState(null);
 
@@ -35,6 +42,10 @@ function Profile() {
 
         case 'state':
           setStateError(error.message);
+          break;
+
+        case 'oldPassword':
+          setOldPasswordError(error.message);
           break;
 
         case 'password':
@@ -55,40 +66,39 @@ function Profile() {
     setNameError(null);
     setEmailError(null);
     setStateError(null);
+    setOldPasswordError(null);
     setPasswordError(null);
     setConfirmPasswordError(null);
-  }
-
-  async function createAccount(params) {
-    try {
-      await api.post('/users', params);
-
-      toast.success('Yeehaa! Your account has been created!');
-
-      setTimeout(() => {
-        history.push('/');
-      }, 1500);
-    } catch (err) {
-      if (err.response) {
-        toast.error(err.response.data.message);
-      } else {
-        toast.error(err.message);
-      }
-    }
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // clearErrors();
+    clearErrors();
 
-    // try {
-    //   await schemaValidate({ name, email, state, password, confirmPassword });
+    try {
+      await schemaValidate({
+        name,
+        email,
+        state,
+        oldPassword,
+        password,
+        confirmPassword,
+      });
 
-    //   createAccount({ name, email, state, password, confirmPassword });
-    // } catch (err) {
-    //   handleErrors(err.inner);
-    // }
+      dispatch(
+        updateProfileRequest({
+          name,
+          email,
+          state,
+          oldPassword,
+          password,
+          confirmPassword,
+        })
+      );
+    } catch (err) {
+      handleErrors(err.inner);
+    }
   }
 
   useEffect(() => {
@@ -147,8 +157,18 @@ function Profile() {
 
         <input
           type="password"
+          name="oldPassword"
+          placeholder="Old Passowrd"
+          value={oldPassword}
+          onChange={e => setOldPassword(e.target.value)}
+        />
+
+        {oldPasswordError && <span>{oldPasswordError}</span>}
+
+        <input
+          type="password"
           name="password"
-          placeholder="Passowrd"
+          placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
         />
@@ -165,9 +185,7 @@ function Profile() {
 
         {confirmPasswordError && <span>{confirmPasswordError}</span>}
 
-        <button type="submit">Create a free account</button>
-
-        <Link to="/">I already have an account</Link>
+        <button type="submit">Save</button>
       </form>
     </>
   );
