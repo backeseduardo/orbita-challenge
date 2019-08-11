@@ -19,6 +19,7 @@ export const Content = styled.div`
   aside {
     img {
       width: 120px;
+      cursor: pointer;
     }
   }
 

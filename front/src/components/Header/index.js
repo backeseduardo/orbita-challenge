@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 import { logout } from '../../store/modules/auth/actions';
 import history from '../../services/history';
@@ -19,7 +20,9 @@ export default function Header() {
     <Container>
       <Content>
         <aside>
-          <img src={logo} alt="Orbita logo" />
+          <Link to="/dashboard">
+            <img src={logo} alt="Orbita logo" />
+          </Link>
         </aside>
 
         <nav>
