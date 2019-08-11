@@ -18,16 +18,12 @@ export default async (req, res, next) => {
         .min(8)
         .max(16)
         .required(),
-      confirmPassword: Yup.string().when('password', (password, field) =>
-        password
-          ? field
-              .required()
-              .oneOf(
-                [Yup.ref('password')],
-                'confirmationPassword different than password'
-              )
-          : field
-      ),
+      confirmPassword: Yup.string()
+        .required()
+        .oneOf(
+          [Yup.ref('password')],
+          'confirmationPassword different than password'
+        ),
     });
 
     await schema.validate(req.body, { abortEarly: false });

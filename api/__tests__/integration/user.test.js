@@ -35,6 +35,14 @@ describe('User', () => {
     expect(response.body).toHaveProperty('id');
   });
 
+  it('should not be able to register due to not send required params', async () => {
+    const response = await request(app)
+      .post('/users')
+      .send();
+
+    expect(response.status).toBe(400);
+  });
+
   it('should not be able to register with a email that already exists', async () => {
     const user = await factory.attrs('User');
 
@@ -161,6 +169,26 @@ describe('User', () => {
     expect(response.body).toStrictEqual({
       error: 'Password does not match',
     });
+  });
+
+  it('should not be able to update without required params', async () => {
+    const user = await factory.create('User');
+
+    const sessionResponse = await request(app)
+      .post('/sessions')
+      .send({
+        email: user.email,
+        password: user.password,
+      });
+
+    const { token } = sessionResponse.body;
+
+    const response = await request(app)
+      .put('/users')
+      .send()
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(400);
   });
 
   it('should not be able to update the email if the provided email already exists', async () => {

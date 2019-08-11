@@ -36,6 +36,14 @@ describe('Session', () => {
     expect(response.status).toBe(401);
   });
 
+  it('should fail session due to user not send email or password', async () => {
+    const response = await request(app)
+      .post('/sessions')
+      .send();
+
+    expect(response.status).toBe(400);
+  });
+
   it('should create the session and return a token', async () => {
     const user = await factory.create('User');
 
