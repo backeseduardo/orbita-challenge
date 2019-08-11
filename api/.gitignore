@@ -1,2 +1,3 @@
 uploads/files/**
 !uploads/files/.gitkeep
+dist
