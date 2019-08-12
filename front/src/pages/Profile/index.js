@@ -9,7 +9,7 @@ import { updateProfileRequest } from '../../store/modules/user/actions';
 
 import schemaValidate from './schemaValidate';
 
-import { Form } from './styles';
+import { Form, Avatar } from './styles';
 
 const Loader = () => (
   <ContentLoader
@@ -44,6 +44,10 @@ function Profile() {
   const [oldPassword, setOldPassword] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [avatarId, setAvatarId] = useState(profile.avatar && profile.avatar.id);
+  const [avatarPreview, setAvatarPreview] = useState(
+    profile.avatar && profile.avatar.url
+  );
 
   const [nameError, setNameError] = useState(null);
   const [emailError, setEmailError] = useState(null);
@@ -114,14 +118,32 @@ function Profile() {
           name,
           email,
           state,
+          avatarId,
           oldPassword,
           password,
           confirmPassword,
         })
       );
+
+      setOldPassword('');
+      setPassword('');
+      setConfirmPassword('');
     } catch (err) {
       handleErrors(err.inner);
     }
+  }
+
+  async function handleChange(e) {
+    const data = new FormData();
+
+    data.append('file', e.target.files[0]);
+
+    const response = await api.post('files', data);
+
+    const { id, url } = response.data;
+
+    setAvatarId(id);
+    setAvatarPreview(url);
   }
 
   useEffect(() => {
@@ -150,6 +172,23 @@ function Profile() {
         <Loader />
       ) : (
         <Form onSubmit={handleSubmit} noValidate>
+          <Avatar htmlFor="avatar">
+            <img
+              src={
+                avatarPreview ||
+                'https://api.adorable.io/avatars/285/abott@adorable.png'
+              }
+              alt=""
+            />
+
+            <input
+              type="file"
+              id="avatar"
+              accept="image/*"
+              onChange={handleChange}
+            />
+          </Avatar>
+
           <input
             type="text"
             name="name"
