@@ -10,6 +10,11 @@ Iniciar o banco de dados:
 $ docker run --name database -e POSTGRES_PASSWORD=docker -p 5433:5432 -d -t postgres
 ```
 
+Vá para a pasta api:
+```bash
+$ cd api
+```
+
 Instalar as dependências:
 ```bash
 $ yarn
@@ -27,9 +32,26 @@ PS: baixar o [solar_data.json](https://drive.google.com/file/d/1dbURdS6TjfnweoFS
 $ yarn sequelize db:seed:all
 ```
 
-Finalmente rodar a api:
+Finalmente rodar a api em modo desenvolvimento:
 ```bash
-$ cd api && yarn dev
+$ yarn dev
 ```
 
 Isso vai rodar a api no endereço `http://localhost:3333`
+
+## front
+
+Vá para o diretório front:
+```bash
+$ cd front
+```
+
+Instalar as dependências:
+```bash
+$ yarn
+```
+
+Iniciar o projeto em modo desenvolvimento:
+```bash
+$ yarn start
+```
