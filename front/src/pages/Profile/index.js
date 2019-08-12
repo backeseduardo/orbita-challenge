@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
+import ContentLoader from 'react-content-loader';
 
 import api from '../../services/api';
 
@@ -8,10 +9,32 @@ import { updateProfileRequest } from '../../store/modules/user/actions';
 
 import schemaValidate from './schemaValidate';
 
+import { Form } from './styles';
+
+const Loader = () => (
+  <ContentLoader
+    height={200}
+    width={500}
+    speed={2}
+    primaryColor="rgb(0,0,0)"
+    secondaryColor="rgb(0,0,0)"
+    primaryOpacity={0.06}
+    secondaryOpacity={0.12}
+  >
+    <rect x="0" y="10" rx="0" ry="0" width="500" height="25" />
+    <rect x="0" y="50" rx="0" ry="0" width="500" height="25" />
+    <rect x="0" y="90" rx="0" ry="0" width="500" height="25" />
+    <rect x="0" y="130" rx="0" ry="0" width="500" height="25" />
+    <rect x="0" y="170" rx="0" ry="0" width="500" height="25" />
+  </ContentLoader>
+);
+
 function Profile() {
   const dispatch = useDispatch();
 
   const profile = useSelector(store => store.user.profile);
+
+  const [loading, setLoading] = useState(true);
 
   const [states, setStates] = useState([]);
 
@@ -111,6 +134,10 @@ function Profile() {
         toast.error(
           'An error happened while trying to load states. Please try again.'
         );
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
       }
     }
 
@@ -119,74 +146,78 @@ function Profile() {
 
   return (
     <>
-      <form onSubmit={handleSubmit} noValidate>
-        <input
-          type="text"
-          name="name"
-          placeholder="Full name"
-          value={name}
-          onChange={e => setName(e.target.value)}
-        />
+      {loading ? (
+        <Loader />
+      ) : (
+        <Form onSubmit={handleSubmit} noValidate>
+          <input
+            type="text"
+            name="name"
+            placeholder="Full name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+          />
 
-        {nameError && <span>{nameError}</span>}
+          {nameError && <span>{nameError}</span>}
 
-        <input
-          type="email"
-          name="email"
-          placeholder="E-mail"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
+          <input
+            type="email"
+            name="email"
+            placeholder="E-mail"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+          />
 
-        {emailError && <span>{emailError}</span>}
+          {emailError && <span>{emailError}</span>}
 
-        <select
-          name="state"
-          value={state}
-          onChange={e => setState(e.target.value)}
-        >
-          <option value="">Select your state</option>
-          {states.map(item => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
+          <select
+            name="state"
+            value={state}
+            onChange={e => setState(e.target.value)}
+          >
+            <option value="">Select your state</option>
+            {states.map(item => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
 
-        {stateError && <span>{stateError}</span>}
+          {stateError && <span>{stateError}</span>}
 
-        <input
-          type="password"
-          name="oldPassword"
-          placeholder="Old Passowrd"
-          value={oldPassword}
-          onChange={e => setOldPassword(e.target.value)}
-        />
+          <input
+            type="password"
+            name="oldPassword"
+            placeholder="Old Passowrd"
+            value={oldPassword}
+            onChange={e => setOldPassword(e.target.value)}
+          />
 
-        {oldPasswordError && <span>{oldPasswordError}</span>}
+          {oldPasswordError && <span>{oldPasswordError}</span>}
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
 
-        {passwordError && <span>{passwordError}</span>}
+          {passwordError && <span>{passwordError}</span>}
 
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm your password"
-          value={confirmPassword}
-          onChange={e => setConfirmPassword(e.target.value)}
-        />
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm your password"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+          />
 
-        {confirmPasswordError && <span>{confirmPasswordError}</span>}
+          {confirmPasswordError && <span>{confirmPasswordError}</span>}
 
-        <button type="submit">Save</button>
-      </form>
+          <button type="submit">Save</button>
+        </Form>
+      )}
     </>
   );
 }
