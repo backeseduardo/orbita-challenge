@@ -3,7 +3,7 @@ import { lighten } from 'polished';
 
 export const Wrapper = styled.div`
   background: #5c5c76;
-  height: 100%;
+  min-height: 100%;
 `;
 
 export const Content = styled.div`

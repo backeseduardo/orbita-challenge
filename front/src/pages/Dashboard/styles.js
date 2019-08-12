@@ -3,22 +3,7 @@ import { darken } from 'polished';
 
 export const Container = styled.div`
   color: #fff;
-
-  > header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    > strong {
-      font-size: 24px;
-      font-weight: 500;
-    }
-
-    > span {
-      font-size: 16px;
-      font-weight: 500;
-    }
-  }
+  margin-top: 30px;
 `;
 
 export const Widgets = styled.div`

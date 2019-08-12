@@ -1,16 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
+import api from '../../services/api';
 
 import { Container, Widgets, Widget } from './styles';
 
 function Dashboard() {
+  const [installations, setInstallations] = useState(0);
+  const [mostExpensive, setMostExpensive] = useState({});
+
+  useEffect(() => {
+    async function loadInstallationsCount() {
+      const response = await api.get('/installations/count');
+
+      setInstallations(response.data);
+    }
+
+    loadInstallationsCount();
+  }, []);
+
+  useEffect(() => {
+    async function loadMostExpensive() {
+      const response = await api.get('/installations/most-expensive');
+
+      setMostExpensive(response.data);
+    }
+
+    loadMostExpensive();
+  }, []);
+
   return (
     <Container>
-      <header>
-        <strong>Dashboard</strong>
-
-        <span>Hello Eduardo Backes</span>
-      </header>
-
       <Widgets>
         <Widget color="one">
           <header>
@@ -18,11 +37,11 @@ function Dashboard() {
 
             <aside>
               <span>State</span>
-              <strong>CA</strong>
+              <strong>{installations.state}</strong>
             </aside>
           </header>
 
-          <strong>44217</strong>
+          <strong>{installations.count}</strong>
         </Widget>
 
         <Widget color="two">
@@ -31,21 +50,11 @@ function Dashboard() {
 
             <aside>
               <span>Zip Code</span>
-              <strong>SAN DIEGO - CA</strong>
+              <strong>{mostExpensive.zip_code}</strong>
             </aside>
           </header>
 
-          <strong>$ 676260.1317</strong>
-        </Widget>
-
-        <Widget color="three">
-          <header>
-            <strong>Top 3 months in installation numbers</strong>
-          </header>
-
-          <strong>2016/03 - 1338</strong>
-          <strong>2016/04 - 1001</strong>
-          <strong>2016/09 - 1005</strong>
+          <strong>$ {mostExpensive.cost}</strong>
         </Widget>
       </Widgets>
     </Container>
