@@ -79,25 +79,19 @@ class InstallationController {
   async indexInstalledCapacity(req, res) {
     const sequelize = Database.getConnection();
 
-    const response = await sequelize.query(
-      `select extract(year from date) as year,
-        sum(system_size) as system_size
-      from installations
-      where state like '${req.userState}'
-      group by 1
-      order by 2 asc`,
-      {
-        type: sequelize.QueryTypes.SELECT,
-        raw: true,
-      }
-    );
+    const data = await Installation.findAll({
+      where: {
+        state: req.userState,
+      },
+      attributes: [
+        [sequelize.literal(`extract(year from date)`), 'year'],
+        [sequelize.literal(`sum(system_size)`), 'system_size'],
+      ],
+      group: ['year'],
+      order: [sequelize.literal(`extract(year from date)`)],
+    });
 
-    return res.json(
-      response.map(row => ({
-        ...row,
-        system_size: parseFloat(row.system_size),
-      }))
-    );
+    return res.json(data);
   }
 }
 
