@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import Chart from 'react-apexcharts';
 
 import api from '../../services/api';
 
 import { Container, Widgets, Widget } from './styles';
-import { topMonthsConfig } from './chartsConfig';
+import ChartTopMonths from './ChartTopMonths';
+import ChartInstallaledCapacity from './ChartInstallaledCapacity';
 
 function Dashboard() {
   const [installations, setInstallations] = useState(0);
   const [mostExpensive, setMostExpensive] = useState({});
-  const [topMonths, setTopMonths] = useState([]);
 
   useEffect(() => {
     async function loadInstallationsCount() {
@@ -31,31 +30,10 @@ function Dashboard() {
     loadMostExpensive();
   }, []);
 
-  useEffect(() => {
-    async function loadTopMonths() {
-      const response = await api.get('/installations/top-months');
-
-      const data = response.data
-        .map(row => ({
-          order: Number(`${row.year}${row.month}`),
-          x: `${row.year}/${row.month}`,
-          y: row.count,
-        }))
-        .sort((a, b) => {
-          if (a.order < b.order) return -1;
-          if (a.order > b.order) return 1;
-
-          return 0;
-        });
-
-      setTopMonths([{ data }]);
-    }
-
-    loadTopMonths();
-  }, []);
-
   return (
     <Container>
+      <ChartInstallaledCapacity />
+
       <Widgets>
         <Widget color="one">
           <header>
@@ -88,12 +66,7 @@ function Dashboard() {
             <strong>Top 3 months</strong>
           </header>
 
-          <Chart
-            type="line"
-            height={80}
-            options={topMonthsConfig}
-            series={topMonths}
-          />
+          <ChartTopMonths height={80} />
         </Widget>
       </Widgets>
     </Container>
