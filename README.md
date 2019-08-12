@@ -37,7 +37,7 @@ Finalmente rodar a api em modo desenvolvimento:
 $ yarn dev
 ```
 
-Isso vai rodar a api no endereço `http://localhost:3333`
+Endereço da api `http://localhost:3333`
 
 ## front
 
