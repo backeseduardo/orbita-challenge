@@ -64,12 +64,22 @@ class UserController {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    const { id, name, state } = await user.update({
+    await user.update({
       ...req.body,
       state: req.body.state.toUpperCase(),
     });
 
-    return res.json({ id, name, email, state });
+    const { id, name, state, avatar } = await User.findByPk(req.userId, {
+      include: [
+        {
+          model: File,
+          as: 'avatar',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
+    });
+
+    return res.json({ id, name, email, state, avatar });
   }
 
   async delete(req, res) {
