@@ -45,5 +45,9 @@ routes.get(
   InstallationController.indexMostExpensive
 );
 routes.get('/installations/top-months', InstallationController.indexTopMonths);
+routes.get(
+  '/installations/installed-capacity',
+  InstallationController.indexInstalledCapacity
+);
 
 export default routes;
